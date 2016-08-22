@@ -1,0 +1,19 @@
+{
+  "name": "sid-parser",
+  "version": "1.0.0",
+  "description": "sid metadata parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- \"test/**/*.js\"",
+    "test:dbg": "./node_modules/mocha/bin/_mocha -- \"test/**/*.js\"",
+    "jshint": "jshint --show-non-errors --verbose app/**/ test/unit/**/"
+  },
+  "author": "Michael Vogt",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.9.3",
+    "mocha": "^3.0.2"
+  }
+}
