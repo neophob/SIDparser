@@ -1,8 +1,63 @@
-'use stric';
+'use strict';
 
 function parsePrintableAsciiChars(string) {
   return string.split('\0')[0];
+}
+
+module.exports.stringToSid = function(json) {
+  if (!json || !json.data) {
+    throw new Error('No data found!');
+  }
+  let buffersize = 0x076;
+  if (json.version > 1) {
+    buffersize = 0x07C;
+  }
+  const data = new Buffer(json.data, 'hex');
+  buffersize += data.length;
+  const buffer = new Buffer(buffersize);
+  buffer.fill(0);
+  if (json.magicId === 'RSID') {
+    buffer.write('RSID', 0, 4, 'ascii');
+  } else {
+    buffer.write('PSID', 0, 4, 'ascii');
+  }
+
+  let version = 2;
+  if (json.version > 0 && json.version < 5) {
+    version = json.version;
+  }
+  buffer.writeUIntBE(version, 4, 2);
+
+  let dataOffset = 0x007C;
+  if (json.version === 1 && json.dataOffset === 0x0076) {
+    dataOffset = 0x0076;
+  }
+  buffer.writeUIntBE(dataOffset, 6, 2);
+
+  buffer.writeUIntBE(json.loadAddress, 8, 2);
+  buffer.writeUIntBE(json.initAddress, 0x0a, 2);
+  buffer.writeUIntBE(json.playAddress, 0x0c, 2);
+  buffer.writeUIntBE(json.songs, 0x0e, 2);
+  buffer.writeUIntBE(json.startSong, 0x010, 2);
+  buffer.writeUIntBE(json.speed, 0x012, 4);
+  buffer.write(json.name, 0x016, 0x020, 'ascii');
+  buffer.write(json.author, 0x036, 0x020, 'ascii');
+  buffer.write(json.released, 0x056, 0x020, 'ascii');
+
+  if (version === 1) {
+    data.copy(buffer, dataOffset, 0);
+    return buffer;
+  }
+
+  buffer.writeUIntBE(json.flags, 0x076, 2);
+  buffer.writeUIntBE(json.startPage, 0x078, 1);
+  buffer.writeUIntBE(json.pageLength, 0x079, 1);
+  buffer.writeUIntBE(json.secondSIDAddress, 0x07A, 1);
+  buffer.writeUIntBE(json.thirdSIDAddress, 0x07B, 1);
+  data.copy(buffer, dataOffset, 0);
+  return buffer;
 };
+
 
 module.exports.sidToString = function(buffer) {
   if (!buffer || !Buffer.isBuffer(buffer)) {

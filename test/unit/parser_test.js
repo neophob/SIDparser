@@ -1,4 +1,4 @@
-'use stric';
+'use strict';
 
 const fs = require('fs');
 const chai = require('chai');
@@ -87,7 +87,7 @@ describe('app/parser.js - parse example file,', function() {
     //WHEN
     const result = parser.sidToString(buffer);
     delete result.data;
-    
+
     //THEN
     expect(result).to.deep.equal({
       magicId: 'PSID',
@@ -108,6 +108,33 @@ describe('app/parser.js - parse example file,', function() {
       thirdSIDAddress: 0,
       flags: 24
      });
+  });
+
+  it('should result same sid when marshalling (json)', function() {
+    //GIVEN
+    const buffer = fs.readFileSync(__dirname + '/../assets/I_Am_the_Walrus.sid');
+    const jsonInput = parser.sidToString(buffer);
+
+    //WHEN
+    const result = parser.stringToSid(jsonInput);
+
+    //THEN
+    expect(result.length).to.equal(buffer.length);
+    const jsonOutput = parser.sidToString(result);
+    expect(jsonOutput).to.deep.equal(jsonInput);
+  });
+
+  it('should result same sid when marshalling (binary)', function() {
+    //GIVEN
+    const buffer = fs.readFileSync(__dirname + '/../assets/I_Am_the_Walrus.sid');
+    const jsonInput = parser.sidToString(buffer);
+
+    //WHEN
+    const result = parser.stringToSid(jsonInput);
+
+    //THEN
+    expect(result.length).to.equal(buffer.length);
+    expect(result).to.deep.equal(buffer);
   });
 
 });

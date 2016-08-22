@@ -6,7 +6,7 @@
   "scripts": {
     "test": "istanbul cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- \"test/**/*.js\"",
     "test:dbg": "./node_modules/mocha/bin/_mocha -- \"test/**/*.js\"",
-    "jshint": "jshint --show-non-errors --verbose app/**/ test/unit/**/"
+    "jshint": "jshint --show-non-errors --verbose app/ test/unit/"
   },
   "author": "Michael Vogt",
   "license": "ISC",
