@@ -17,6 +17,6 @@
     "mocha": "^3.0.2"
   },
   "dependencies": {
-    "glob": "^7.0.5"
+    "glob": "^9.0.0"
   }
 }
